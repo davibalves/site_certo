@@ -1,0 +1,39 @@
+baseURL: www.example.com
+languageCode: en-us
+title: Aquisição de Dados Públicos
+theme: hugo-whisper-theme
+pygmentsCodeFences: yes
+pygmentsCodefencesGuessSyntax: yes
+pygmentsUseClasses: yes
+module:
+  hugoVersion:
+    extended: yes
+    min: 0.55.0
+    summaryLength: 30
+menu:
+  main:
+    - name: Página Principal
+      url: /
+      weight: 1
+    - name: Tutoriais
+      url: /docs/
+      weight: 2
+params:
+  google_analytics_id: ''
+  homepage_button_link: /docs
+  homepage_button_text: Acesso ao conteúdo
+  #homepage_image: /images/terminal.gif
+  homepage_intro: 
+  homepage_meta_tags:
+    meta_description: 'Esta página foi desenvolvida para agregar tutoriais para o acesso de dados públicos de diferentes fontes no Brasil'
+    meta_og_description: 'Esta página foi desenvolvida para agregar tutoriais para o acesso de dados públicos de diferentes fontes no Brasil'
+    meta_og_image: https://raw.githubusercontent.com/JugglerX/hugo-whisper-theme/master/images/tn.png
+    meta_og_title: Aquisição de Dados Públicos
+    meta_og_type: website
+    meta_og_url: https://hugo-whisper.netlify.app
+    meta_twitter_card: summary
+    meta_twitter_creator: '@zerostaticio'
+    meta_twitter_site: '@zerostaticio'
+  logo:
+    mobile: /images/download.png
+    standard: /images/download.png

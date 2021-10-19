@@ -1,0 +1,214 @@
+---
+title: Tutorial - Aquisição de Microdados de Sistemas de Informação em Saúde (SIS)
+summary: Resumo de como utilizar a biblioteca *MicrodataSUS* para aquisição de microdados referentes aos nascimentos, óbitos e internações 'no' Brasil
+output: html_document
+---
+<style>
+body {
+text-align: justify}
+</style>
+
+# O pacote **microdatasus**
+
+O pacote **microdatasus** permite a aquisição e processamento de microdados de diversos Sistemas de Informação em Saúde (SIS). Os SIS que podem ser acessados utilizando este pacote estão detalhados no [artigo](http://ref.scielo.org/dhcq3y). Neste tutorial, serão apresentados os procedimentos para acessar microdados do Sistema de Informação sobre Mortalidade - SIM, Sistema de Informação sobre Nascidos Vicos - SINASC e o Sistema de Informações Hospitalares - SIH. Os procedimentos para instalação do pacote serão apresentados de maneira resumida. O detalhamento destes procedimentos são apresentados no [github do autor da biblioteca](https://github.com/rfsaldanha/microdatasus) e no [artigo](http://ref.scielo.org/dhcq3y).
+
+## Instalando o pacote **microdatasus**
+
+Inicialmente é necessário instalar o pacote **devtools** e carregá-lo utlizando os comandos a seguir:
+
+**Instalando o pacote:**
+```{r class.source="bg-primary", class.output="bg-primary", eval = F}
+install.packages("devtools")
+```
+
+**Carregando o pacote:**
+```{r class.source="bg-primary", class.output="bg-primary", message= F}
+require("devtools")
+```
+
+o pacote também pode ser carrgeando utilziando a função *library*:
+
+```{r class.source="bg-primary", class.output="bg-primary", warning= F}
+library("devtools")
+```
+
+O procdimento também pode ser realizado através dos menus do R através da guia *Pacotes* e em seguida *Instalar Pacote(s)...*:
+
+<p align="center">
+  <img src="https://github.com/davibalves/imagens/blob/main/microdatasus/instalar_pacote.png?raw=true" alt = "Instalação do Pacote">
+</p>
+
+Selecione o pacote **devtools** e clique em **OK**:
+
+<p align="center">
+  <img src="https://github.com/davibalves/imagens/blob/main/microdatasus/instalar_pacote_seleciona.png?raw=true" alt = "Selecionando o pacote">
+</p>
+
+O Carregamento também pode ser realizado pelo menu *Pacotes* e em seguida *Carregar Pacote*, selecionando o pacote **devtools** e clicando em *ok*.
+
+Após a instalação e o carregamento do pacote **devtools**, instale o pacote **microdatasus** utilizando o seguinte comando:
+
+```{r class.source="bg-primary", class.output="bg-primary", message= F, eval=F}
+install_github("rfsaldanha/microdatasus")
+```
+
+Em seguida, carregue o pacote ***microdatasus***:
+
+```{r class.source="bg-primary", class.output="bg-primary", message= F}
+library(microdatasus)
+```
+
+## O comando básico para acessar os microdados: *fetch_datasus()*
+
+A função *fetch_datasus()* do pacote **microdatasus** é utilizado para acessar os dados dos diferentes SIS. Os seus principais argmentos são:
+
+ + *year_start*: Indica o ano do início do período dos dados que serão adquiridos. Deve ser indicado como um número de quatro dígitos.
+ + *year_end*: Indica o ano de término do período. Deve ser indicado como um número de quatro dígitos e para adquirir dados de um único ano os argumentos *year_start* e *yer_end* devem ser iguais.
+ + *uf*: Indica a(s) UF(s) para a quais se deseja as informações. As UF(s) devem ser indicadas através de sua sigla em maiúsculo e entre aspas, como por exemplo ***"RJ"*** para o Rio de Janeiro. Para adquirir dados referentes a todo o Brasil deve-se utilizar a opção ***"all"*** e para adquirir dados de mais de uma UF é necessário concatenar as siglas. Para acessar dados de Minas Gerais e Espírito Santo, por exemplo, deve-se indica ***uf=c("MG","ES")***.
+ + *month_start*: Indica o mês do início do período dos dados que serão adquiridos. Deve ser indicado como um número de dois dígitos entre 0 e 12. Não é aplicado a todos os SIS.
+ + *month_end*: Indica o mês do fim do período dos dados que serão adquiridos. Deve ser indicado como um número de dois dígitos entre 0 e 12. Não é aplicado a todos os SIS.
+ + *information_system*: Indica o sistema de informação do qual se deseja obter os dados. As siglas referentes a cada um dos sistemas estão disponíveis no [artigo](http://ref.scielo.org/dhcq3y), e devem ser indicadas sempre em maíusculo e entre aspas.
+ 
+Desta maneira, o comando padrão para aquisição dos microdados é :
+
+```{r  class.source="bg-primary", class.output="bg-primary", message= F, eval=F}
+nome_banco <- fetch_datasus(year_start=ano, year_end=ano, uf="UF", information_system="SIGLA_SISTEMA")
+```
+
+## Os comandos para processar os microdados: *process_sim()*, *process_sih()* e *process_sinasc()*
+
+Nos bancos de dados dos microdados dos SIS as variáveis categóricas são representadas por códigos (números). No Sistema de Informação sobre Mortalidade - SIM - por exemplo, o sexo é registrado como **1** para o sexo **Masculino** e **2** para o sexo **Feminino**. O DataSUS oferece toda a documentação e arquivos necessários para o processamento destas informações de maneira correta. Geralmente este é um procedimento que demanda tempo e domínio do SIS e de programação em R.
+
+Contudo, o pacote **microdatasus** permite o processamento destas informações, substituindo os códigos pela legenda de cada categoria das variáveis disponíveis. As funções para o processamento do banco de dados são específicas para os dados de cada sistema e neste tutorial serão apresentados 3 comandos principais para o processamento de dados baixados:
+
+ + *process_sinasc()*: utilizado para processar informações oriundas do Sistema de Informação sobre Nascidos Vivos (SINASC):
+ 
+```{r  class.source="bg-primary", class.output="bg-primary", message= F, eval=F}
+nome_banco_sinasc_processado <- process_sinasc(nome_banco_sinasc)
+```
+
+ + *process_sim()*: utilizado para processar informações oriundos do Sistema de Informação sobre a Mortalidade (SIM):
+ 
+```{r  class.source="bg-primary", class.output="bg-primary", message= F, eval=F}
+nome_banco_sim_processado <- process_sim(nome_banco_sim)
+```
+
+ + *process_sih()*: utilizado para processar informações oriundos do Sistema de Informações Hospitalares (SIH):
+ 
+```{r  class.source="bg-primary", class.output="bg-primary", message= F, eval=F}
+nome_banco_sih_processado <- process_sih(nome_banco_sih)
+```
+
+## Acessando e processando dados sobre os Nascimentos (SINASC)
+ 
+Neste exemplo, iremos acessar microdados sobre os nascimentos no estado do Rio de Janeiro em 2019, alocando estes dados em banco com o nome *nv_rj_19*.
+
+Para baixar o banco de dados devemos utilizar o comando:
+
+```{r class.source="bg-primary", class.output="bg-primary", message= F}
+nv_rj_19 <- fetch_datasus(year_start=2019, year_end=2019, uf="RJ", information_system="SINASC")
+```
+
+Este banco, *nv_rj_19*, contém as informações brutas referentes aos nascmentos ocorridos no estado e ano selecionados:
+
+```{r,echo=F}
+DT::datatable(nv_rj_19[1:100,1:15],options = list(  pageLength=10, scrollX='400px'))
+```
+
+Perceba que as informações não estão processadas. Vamos preparar as informações do banco utilizando a função *process_sinasc* alocando estas informações em um banco de dados nomeado *nv_rj_19_proc* utilizando o comando:
+
+```{r class.source="bg-primary", class.output="bg-primary", message= F}
+nv_rj_19_proc <- process_sinasc(nv_rj_19)
+```
+
+Após utilizar o comando anior o banco de dados *nv_rj_19_proc* apresentará as informações devidamente processadas:
+
+```{r,echo=F}
+DT::datatable(nv_rj_19_proc[1:100,1:15],options = list(  pageLength=10, scrollX='400px'))
+```
+
+## Acessando e processando dados sobre Óbtios (SIM)
+ 
+Neste exemplo, iremos acessar microdados sobre os óbitos registrados no estado do Espírito Santo em 2019, alocando estes dados em banco com o nome *obt_es_19*.
+
+Para baixar o banco de dados devemos utilizar o comando:
+
+```{r class.source="bg-primary", class.output="bg-primary", message= F}
+obt_es_19 <- fetch_datasus(year_start=2019, year_end=2019, uf="ES", information_system="SIM-DO")
+```
+
+Este banco, *obt_es_19*, contém as informações brutas referentes aos óbitos ocorridos no estado no ano selecionado:
+
+```{r,echo=F}
+DT::datatable(obt_es_19[1:100,1:15],options = list(  pageLength=10, scrollX='400px'))
+```
+
+Para preparar as informações e alocál-a em um banco de dados nomeado *obt_es_19_proc* utlizamos o comando:
+
+```{r class.source="bg-primary", class.output="bg-primary", message= F}
+obt_es_19_proc <- process_sim(obt_es_19)
+```
+
+Após utilizar comando anterior o banco de dados *obt_es_19_proc* apresentará as informações devidamente processadas:
+
+```{r,echo=F}
+DT::datatable(obt_es_19_proc[1:100,1:15],options = list(  pageLength=10, scrollX='400px'))
+```
+
+## Acessando e processando dados sobre as Internações (SIH)
+ 
+Neste exemplo, iremos acessar microdados sobre as internações registradas no estado do Acre de janeiro a dezembro de 2020 no âmbito do SUS, alocando estes dados em banco com o nome *int_ac_20*.
+
+Para baixar o banco de dados devemos utilizar o comando:
+
+```{r class.source="bg-primary", class.output="bg-primary", message= F}
+int_ac_20 <- fetch_datasus(year_start=2020, year_end=2020, month_start = 1,month_end = 12, uf="AC", information_system="SIH-RD")
+```
+
+Este banco, *int_ac_20*, contém as informações brutas referentes às internaões ocorridas no estado registrados no âmbito do SUS no ano selecionado:
+
+```{r,echo=F, message= F,warning=F}
+DT::datatable(int_ac_20[1:100,1:15],options = list(  pageLength=10, scrollX='400px'))
+```
+
+Para processar as informações e alocá-las em um banco de dados nomeado *int_ac_20_proc* utilize o comando a seguir:
+
+```{r class.source="bg-primary", class.output="bg-primary", message= F}
+int_ac_20_proc <- process_sih(int_ac_20)
+```
+
+Após utilizar o comando anterior o banco de dados *int_ac_20_proc* apresentará as informações devidamente processadas:
+
+```{r,echo=F}
+DT::datatable(int_ac_20_proc[1:100,1:15],options = list(  pageLength=10, scrollX='400px'))
+```
+
+## Salvando o banco de dados
+
+Após realizar o download, processar as informações do banco de dados e realizar o devido preparo da base e das variáveis de interesse, o banco de dados pode ser salvo em formato *.RData*, próprio do R, que pode ser aberto para análises a qualquer momento. O procedimento está detalhado no tópico **3.1 Salvando conjuntos de dados** da página 15 da [apostila de R Commander](http://gae.uniriotec.br/7/Notas_de_aula_Rcmdr.pdf).
+
+Inicialmente, clique para selecionar o conjunto de dados ativos:
+
+<p align="center">
+  <img src="https://github.com/davibalves/imagens/blob/main/microdatasus/salvar_seleciona.png?raw=true" alt="Selecionando o conjunto ativo - Passo 1">
+</p>
+
+Em seguida, selecione o conjunto de dados:
+
+<p align="center">
+  <img src="https://github.com/davibalves/imagens/raw/main/microdatasus/salvar_seleciona_base.png?raw=true" alt="Selecionando o conjunto ativo - Passo 2">
+</p>
+
+Com o banco de dados selecionado, selecione o menu *Dados*, em seguida, *Conjunto de Dados Ativo* e então *Salvar Conjunto de Dados Ativo*:
+
+<p align="center">
+  <img src="https://github.com/davibalves/imagens/raw/main/microdatasus/salvar_base.png?raw=true" alt="Menu para salvar a base">
+</p>
+
+Na janela que se abrirá, selecione o diretório e a pasta em que deseja salvar a base,digite o nome do arquivo e clique em *salvar*:
+
+<p align="center">
+  <img src="https://github.com/davibalves/imagens/raw/main/microdatasus/salvar_nome.png?raw=true" alt="Salvando arquivo">
+</p>
+
+Posteriormente, para carregar esta base de dados, siga os procedimentos apresentados no tópico **3.2 Carregando conjuntos de dados (no formato .RData)** da página 15 da [apostila de R Commander](http://gae.uniriotec.br/7/Notas_de_aula_Rcmdr.pdf).
