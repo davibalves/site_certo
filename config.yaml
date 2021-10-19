@@ -1,4 +1,4 @@
-baseURL: www.example.com
+baseURL: testedadospublicos.netlify.app
 languageCode: en-us
 title: Aquisição de Dados Públicos
 theme: hugo-whisper-theme
